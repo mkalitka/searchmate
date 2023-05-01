@@ -29,7 +29,7 @@ clean:
 
 lint:
 	poetry run pylint searchmate
-	poetry run black --check searchmate
+	poetry run black --check --line-length 80 searchmate
 
 formatter:
-	poetry run black searchmate
+	poetry run black --line-length 80 searchmate

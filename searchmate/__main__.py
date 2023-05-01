@@ -1,13 +1,16 @@
-"""
-This module creates a basic cli and runs program.
-"""
+"""This module creates a basic cli and runs program."""
 
 import argparse
 import importlib.metadata
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
-    """Creates an argument parser for the program"""
+    """
+    Creates an argument parser for the program
+
+    Returns:
+        argparse.ArgumentParser: An argument parser for CLI.
+    """
     parser = argparse.ArgumentParser(
         prog="searchmate",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -38,12 +41,14 @@ def create_argument_parser() -> argparse.ArgumentParser:
 
 def print_version() -> None:
     """Prints installed SearchMate version"""
+
     version = importlib.metadata.version(__package__)
     print(f"Current SearchMate version: {version}")
 
 
 def main() -> None:
     """Runs SearchMate as a Python application"""
+
     parser = create_argument_parser()
     cmdline_arguments = parser.parse_args()
 

@@ -2,7 +2,8 @@
 
 #### *A modular and versatile desktop assistant that searches for apps, performs basic math and makes chatting with GPT easier.*
 
-The project was created by **UWR** students for **object-oriented programming** subject.
+The project was created by **UWR** students for
+**object-oriented programming** subject.
 
 ## Screenshots
 

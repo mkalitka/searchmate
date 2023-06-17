@@ -1,0 +1,20 @@
+QLineEdit {
+    background-color: white;
+    font-size: 34px;
+    font-family: 'Times New Roman', Times, serif;
+    padding: 14px;
+    border-radius: 16px;
+    border-top-left-radius: 0%;
+    border-bottom-left-radius: 0%;
+    width: 300px;
+}
+QFrame{
+    background-color: white;
+    padding-right: 0px;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+QLabel{
+    background-color: white;
+}
+

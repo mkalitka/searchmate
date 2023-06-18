@@ -11,6 +11,8 @@ class MainWindow(QWidget):
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
 
+        self.list_of_widgets = []
+
         self.center_window(1.5)
 
         self.setFocus()
@@ -25,33 +27,28 @@ class MainWindow(QWidget):
         self.setLayouts()
 
         # Search bar
-        self.search_bar = QLineEdit(self)
-        self.search_bar.setFixedSize(self.width - self.icon_width, 60)
-        self.search_bar.setPlaceholderText("Search something, mate")
-        self.search_bar.returnPressed.connect(self.increaseWindow)
-
+        self.setSearchBar()
+        self.search_bar.textChanged.connect(self.changeWinSize)
+        self.search_bar.returnPressed.connect(self.run)
         # Settings of top Layout
         self.topLayoutSettings()
 
-        # Example data
-        self.data = [
-            "Apple",
-            "Banana",
-            "Cherry",
-            "Date",
-            "Elderberry",
-            "Fig",
-            "Grape",
-        ]
+    def run(self):
+        print("chuj")
+
+    def isMatch(self, input):
+        input = ""
+        check = "math"
+        if check == "math" or check == "gpt" or check == "app":
+            return [True, check]
+        return [False]
 
     def topLayoutSettings(self):
-        # self.result_list = QListWidget()
         self.topLayout.addWidget(self.icFrame)
         self.topLayout.addWidget(self.icon, 0, 0)
 
         self.topLayout.addWidget(self.search_bar, 0, 1)
         self.topLayout.setAlignment(self.icon, Qt.AlignmentFlag.AlignCenter)
-        # topLayout.addWidget(self.result_list,1,0)
 
     def setLayouts(self):
         self.mainLayout = QGridLayout()
@@ -62,34 +59,49 @@ class MainWindow(QWidget):
         self.mainLayout.setContentsMargins(0, 10, 0, 0)
         self.mainLayout.addLayout(self.topLayout, 0, 0)
         self.setLayout(self.mainLayout)
-        self.mainLayout.addWidget(self.rsFrame, 1, 0)
+        # self.mainLayout.addWidget(self.rsFrame, 1, 0)
 
     def setFrames(self):
         self.icFrame = QFrame()
         self.icFrame.setFixedSize(self.icon_width, self.tmp_height - 10)
-
+    
+    def set_bottom_frame(self):
         self.rsFrame = QFrame()
         self.rsFrame.setFixedSize(self.width, 0)
-        self.rsFrame.setStyleSheet(
-            """border-top-left-radius: 0px; 
-                                    border-bottom-right-radius: 16px;"""
-        )
+        self.rsFrame.setObjectName("rsFrame")
+        self.list_of_widgets.append(self.rsFrame)
 
-    def increaseWindow(self):
-        self.search_bar.setStyleSheet("border-bottom-right-radius: 0px")
-        self.icFrame.setStyleSheet("border-bottom-left-radius: 0px")
-        if self.search_bar.text() == "chuj":
+    def setSearchBar(self):
+        self.search_bar = QLineEdit(self)
+        self.search_bar.setFixedSize(self.width - self.icon_width, 60)
+        self.search_bar.setPlaceholderText("Search something, mate")
+
+    def changeWinSize(self):  
+        input = self.search_bar.text()
+        check = self.isMatch(input)
+        print("slowo:" , input)
+        
+        if (not (input.strip())) ^ (not check[0]):
+            self.remove_widgets()
             self.setFixedSize(self.width, self.tmp_height)
             self.rsFrame.setFixedSize(self.width, 0)
             self.search_bar.setStyleSheet("border-bottom-right-radius: 14px")
             self.icFrame.setStyleSheet("border-bottom-left-radius: 14px")
-        elif self.search_bar.text() == "dupa":
+        elif check[0]:
+            self.search_bar.setStyleSheet("border-bottom-right-radius: 0px")
+            self.icFrame.setStyleSheet("border-bottom-left-radius: 0px")
             self.setFixedSize(self.width, 460)
+            self.set_bottom_frame()
             self.mainLayout.addWidget(self.rsFrame, 1, 0)
             self.rsFrame.setFixedSize(self.width, 400 - 10)
 
-    def resetWindowSize(self):
-        self.rsFrame.hide()
+            result = "4"
+            if check[1] == "math":
+                self.display_math(result)
+            elif check[1] == "gpt":
+                pass
+            elif check[1] == "app":
+                pass
 
     def center_window(self, const):
         self.screen = QApplication.primaryScreen()
@@ -103,8 +115,8 @@ class MainWindow(QWidget):
 
         self.width = self.width + self.icon_width
         self.tmp_height = 70
-        print(self.width)
-        print(int((screen_y - self.tmp_height) / 2))
+        # print(self.width)
+        # print(int((screen_y - self.tmp_height) / 2))
         self.setFixedSize(self.width, self.tmp_height)
         self.x = int((screen_x - self.width) / 2)
         self.move(self.x, self.height)
@@ -123,10 +135,24 @@ class MainWindow(QWidget):
         self.costam.addWidget(self.result_list, 1, 0)
 
     def on_focusChanged(self):
-        print(self.isActiveWindow())
+        # print(self.isActiveWindow())
         if self.isActiveWindow() == False:
             QApplication.instance().quit()
 
+    def display_on_board(self,result):
+        label = QLabel(result)
+        self.mainLayout.addWidget(label,1,0)
+        self.list_of_widgets.append(label)
+
+    def remove_widgets(self):
+        size  = len(self.list_of_widgets)
+        if size > 0:
+            for i in range(size):
+                widget = self.list_of_widgets[i]
+                self.mainLayout.removeWidget(widget)
+                widget.deleteLater()
+
+        
 
 app = QApplication(sys.argv)
 with open("styles.css", "r") as file:

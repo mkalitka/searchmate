@@ -74,12 +74,4 @@ class Config:
         self._config.set(section, option, value)
 
 
-class AppConfig(Config):
-    """
-    This class manages configuration for Searchmate.
-    It sets 'searchmate' as Config class section's name.
-    """
-
-    def __init__(self) -> None:
-        """Class constructor"""
-        super().__init__()
+app_config = Config()

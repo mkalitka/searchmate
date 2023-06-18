@@ -2,6 +2,7 @@
 
 import argparse
 import importlib.metadata
+import logging
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
@@ -48,6 +49,9 @@ def print_version() -> None:
 
 def main() -> None:
     """Runs SearchMate as a Python application"""
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     parser = create_argument_parser()
     cmdline_arguments = parser.parse_args()

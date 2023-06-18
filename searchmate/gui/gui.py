@@ -40,8 +40,8 @@ class MainWindow(QWidget):
         input = ""
         check = "math"
         if check == "math" or check == "gpt" or check == "app":
-            return [True, check]
-        return [False]
+            return True
+        return False
 
     def topLayoutSettings(self):
         self.topLayout.addWidget(self.icFrame)
@@ -81,27 +81,20 @@ class MainWindow(QWidget):
         check = self.isMatch(input)
         print("slowo:" , input)
         
-        if (not (input.strip())) ^ (not check[0]):
+        if (not (input.strip())) ^ (not check):
             self.remove_widgets()
             self.setFixedSize(self.width, self.tmp_height)
             self.rsFrame.setFixedSize(self.width, 0)
             self.search_bar.setStyleSheet("border-bottom-right-radius: 14px")
             self.icFrame.setStyleSheet("border-bottom-left-radius: 14px")
-        elif check[0]:
+        elif check:
             self.search_bar.setStyleSheet("border-bottom-right-radius: 0px")
             self.icFrame.setStyleSheet("border-bottom-left-radius: 0px")
             self.setFixedSize(self.width, 460)
             self.set_bottom_frame()
             self.mainLayout.addWidget(self.rsFrame, 1, 0)
             self.rsFrame.setFixedSize(self.width, 400 - 10)
-
-            result = "4"
-            if check[1] == "math":
-                self.display_math(result)
-            elif check[1] == "gpt":
-                pass
-            elif check[1] == "app":
-                pass
+            self.suggestion(input)
 
     def center_window(self, const):
         self.screen = QApplication.primaryScreen()
@@ -139,17 +132,16 @@ class MainWindow(QWidget):
         if self.isActiveWindow() == False:
             QApplication.instance().quit()
 
-    def display_on_board(self,result):
+    def suggestion(self,result):
         label = QLabel(result)
         self.mainLayout.addWidget(label,1,0)
         self.list_of_widgets.append(label)
 
     def remove_widgets(self):
-        size  = len(self.list_of_widgets)
-        if size > 0:
-            for i in range(size):
-                widget = self.list_of_widgets[i]
+        for widget in self.list_of_widgets:
+            if not sip.isdeleted(widget):
                 self.mainLayout.removeWidget(widget)
+                widget.hide()
                 widget.deleteLater()
 
         

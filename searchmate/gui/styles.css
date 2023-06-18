@@ -1,8 +1,9 @@
 QLineEdit {
     background-color: white;
-    font-size: 34px;
-    font-family: 'Times New Roman', Times, serif;
-    padding: 14px;
+    font-size: 25px;
+    font-family: 'Hubot Sans';
+    padding: 12px;
+    padding-left: 0px;
     border-radius: 16px;
     border-top-left-radius: 0%;
     border-bottom-left-radius: 0%;
@@ -11,10 +12,14 @@ QLineEdit {
 QFrame{
     background-color: white;
     padding-right: 0px;
+    padding-bottom: 0px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 16px;
 }
-QLabel{
-    background-color: white;
+QGridLayout{
+    padding: 0px;
+    align-self:baseline;
 }
+
+
 

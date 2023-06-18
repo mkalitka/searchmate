@@ -12,6 +12,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 configparser = "^5.3.0"
+pyqt6 = "^6.5.1"
+pynput = "^1.7.6"
 
 
 [tool.poetry.group.dev.dependencies]

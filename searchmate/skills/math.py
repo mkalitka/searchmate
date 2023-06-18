@@ -1,36 +1,49 @@
-"""Abstract skill class."""
+"""Math skill."""
 
-from abc import ABC, abstractmethod
+from typing import Optional
 
+import cexprtk
 
-class Skill(ABC):
+from searchmate.skill import Skill
+
+class MathSkill(Skill):
     """
-    Abstract skill class, needs to be a parent of each skill.
-
-    Attributes:
-        query: Users' text input.
+    Math skill, it evaluates string to a math value.
     """
 
-    def __init__(self, query: str) -> None:
-        super().__init__(query)
+    def __init__(self) -> None:
+        super().__init__()
         self.keywords = ["math"]
 
-    @abstractmethod
-    def run(self) -> str:
+    def run(self, query: str) -> Optional[str]:
         """
         Code to be executed when running skill.
+
+        Attributes:
+            query: Users' text input.
 
         Returns:
             str: Text to display after skill runs.
         """
-        return None
+        return self.suggestion(query)
 
-    @abstractmethod
-    def suggestion(self) -> str:
+    def suggestion(self, query: str) -> Optional[str]:
         """
         What to display before executing skill.
+
+        Attributes:
+            query: Users' text input.
 
         Returns:
             str: Text to display before skill runs.
         """
-        return None
+        result = cexprtk.evaluate_expression(query, {})
+
+        try:
+            if result == int(result):
+                return str(int(result))
+        except Exception:
+            return "Idzie perkusista przez las, idzie, odwraca się, \
+patrzy, a tam wielka stopa. Ba dum tss."
+
+        return str(result)

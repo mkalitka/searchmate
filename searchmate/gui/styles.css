@@ -8,6 +8,7 @@ QLineEdit {
     border-top-left-radius: 0%;
     border-bottom-left-radius: 0%;
     width: 300px;
+    color: black;
 }
 QFrame{
     background-color: white;

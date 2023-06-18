@@ -9,6 +9,8 @@ import re
 import importlib
 import logging
 
+from typing import Optional
+
 
 class InvalidSkillException(Exception):
     """Exception to throw when a skill is invalid."""
@@ -46,15 +48,16 @@ class SkillLoader:  # (temp!) pylint: disable=C0115,R0903
             try:
                 class_ = getattr(modules, i)
 
-                if not hasattr(class_, "run") or not hasattr(
-                    class_, "suggestion"
-                ):
-                    raise InvalidSkillException(
-                        f"no functions run() and suggestion() found in skill {class_.__name__}"
-                    )
-
-                # Append only if parent class' name is 'Skill'.
+                # Append only if parent class' name is 'Skill'
+                # and class has functions run() and suggestion().
                 if class_.__bases__[0].__name__ == "Skill":
+                    if not hasattr(class_, "run") or not hasattr(
+                        class_, "suggestion"
+                    ):
+                        raise InvalidSkillException(
+                            f"no function run() or suggestion() found \
+in skill {class_.__name__}"
+                        )
                     skills.append(class_)
             except AttributeError:
                 continue
@@ -65,3 +68,21 @@ class SkillLoader:  # (temp!) pylint: disable=C0115,R0903
             )
 
         return skills[0]
+
+    def get_suggestion(self, query: str) -> Optional[str]:
+        words = query.split()
+        keyword = words[0]
+
+        for skill in self._skills:
+            if keyword in skill.keywords:
+                return skill.suggestion(" ".join(words[1:]))
+
+        return None
+
+    def run(self, query: str) -> Optional[str]:
+        words = query.split()
+        keyword = words[0]
+
+        for skill in self._skills:
+            if keyword in skill.keywords:
+                return skill.run(" ".join(words[1:]))

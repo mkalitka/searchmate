@@ -1,34 +1,39 @@
-"""Abstract skill class."""
+"""GPT skill."""
+
+from typing import Optional
 
 from searchmate.skill import Skill
 
 
 class GPTSkill(Skill):
     """
-    Abstract skill class, needs to be a parent of each skill.
-
-    Attributes:
-        query: Users' text input.
+    GPT skill, makes chatting with GPT available in SearchMate.
     """
 
-    def __init__(self, query: str) -> None:
-        super().__init__(query)
+    def __init__(self) -> None:
+        super().__init__()
         self.keywords = ["gpt"]
 
-    def run(self) -> str:
+    def run(self, query: str) -> Optional[str]:
         """
         Code to be executed when running skill.
+
+        Arguments:
+            query: Users' text input.
 
         Returns:
             str: Text to display after skill runs.
         """
-        return None
+        return f"Enter: {query}"
 
-    def suggestion(self) -> str:
+    def suggestion(self, query: str) -> Optional[str]:
         """
         What to display before executing skill.
+
+        Arguments:
+            query: Users' text input.
 
         Returns:
             str: Text to display before skill runs.
         """
-        return None
+        return query

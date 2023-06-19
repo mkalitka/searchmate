@@ -70,8 +70,11 @@ in skill {class_.__name__}"
         return skills[0]
 
     def get_suggestion(self, query: str) -> Optional[str]:
-        words = query.split()
-        keyword = words[0]
+        try:
+            words = query.split()
+            keyword = words[0]
+        except IndexError:
+            return None
 
         for skill in self._skills:
             if keyword in skill.keywords:
@@ -80,9 +83,12 @@ in skill {class_.__name__}"
         return None
 
     def run(self, query: str) -> Optional[str]:
-        words = query.split()
-        keyword = words[0]
-
+        try:
+            words = query.split()
+            keyword = words[0]
+        except IndexErrord:
+            return None
+            
         for skill in self._skills:
             if keyword in skill.keywords:
                 return skill.run(" ".join(words[1:]))

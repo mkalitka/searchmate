@@ -1,8 +1,14 @@
 """This module creates a basic cli and runs program."""
 
+import os
 import argparse
 import importlib.metadata
 import logging
+
+from searchmate.gui import gui
+
+
+version = importlib.metadata.version(__package__)
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
@@ -43,23 +49,35 @@ def create_argument_parser() -> argparse.ArgumentParser:
 def print_version() -> None:
     """Prints installed SearchMate version"""
 
-    version = importlib.metadata.version(__package__)
     print(f"Current SearchMate version: {version}")
 
 
 def main() -> None:
     """Runs SearchMate as a Python application"""
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-    )
 
     parser = create_argument_parser()
     cmdline_arguments = parser.parse_args()
 
     if hasattr(cmdline_arguments, "version"):
         print_version()
-    else:
+    elif hasattr(cmdline_arguments, "help"):
         parser.print_help()
+    else:
+        if hasattr(cmdline_arguments, "verbose"):
+            log_level = logging.DEBUG
+        else:
+            log_level = logging.INFO
+
+        logging.basicConfig(
+            level=log_level, format="%(asctime)s - %(levelname)s - %(message)s"
+        )
+
+        logging.info("Main - Starting Searchmate version %s", version)
+
+        os.environ["QT_QPA_PLATFORM"] = "xcb"
+        gui.run()
+
+        logging.info("Main - Stopping SearchMate.")
 
 
 if __name__ == "__main__":

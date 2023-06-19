@@ -1,5 +1,5 @@
 """
-Skill loader is a basic component where all skills get loaded.
+SkillLoader is a basic component where all skills get loaded.
 It checks 'skills/' directory in package home and loads all skills.
 It also recognizes which skill should run with given input.
 """
@@ -19,26 +19,45 @@ class InvalidSkillException(Exception):
         super().__init__(message)
 
 
-class SkillLoader:  # (temp!) pylint: disable=C0115,R0903
+class SkillLoader:
+    """
+    SkillLoader is a basic component where all skills get loaded.
+    It checks 'skills/' directory in package home and loads all skills.
+    It also recognizes which skill should run with given input.
+    """
+
     def __init__(self):
-        module_path = os.path.dirname(os.path.abspath(__file__))
-        tree = os.listdir(f"{module_path}/skills")
+        self._module_path = os.path.dirname(os.path.abspath(__file__))
+        self._tree = os.listdir(f"{self._module_path}/skills")
 
         # Filter out any files that contains double underscore
         # and doesn't end with '.py'.
-        pattern = r"^[^__]*.py$"
-        skills_tree = [s for s in tree if re.match(pattern, s)]
+        self._pattern = r"^(?!_).*\.py$"
+        self._skills_tree = [
+            s for s in self._tree if re.match(self._pattern, s)
+        ]
 
         self._skills = []
 
-        for i in skills_tree:
+        for i in self._skills_tree:
             name = i.replace(".py", "")
-            self._skills.append(
-                self._get_skill_from_module(f"searchmate.skills.{name}")()
-            )
+            try:
+                self._skills.append(
+                    self._get_skill_from_module(f"searchmate.skills.{name}")()
+                )
+                logging.debug("SkillLoader - Loading skill %s.", name)
+            except TypeError:
+                logging.warning(
+                    "SkillLoader - Couldn't load skill %s, "
+                    "does it have run() and suggestion() "
+                    "functions implemented?",
+                    name,
+                )
 
         if len(self._skills) == 0:
-            logging.warning("No skills were loaded, using fallback only.")
+            logging.warning(
+                "SkillLoader - No skills were loaded, using fallback only."
+            )
 
     def _get_skill_from_module(self, module: str) -> object:
         modules = importlib.import_module(module)
@@ -48,16 +67,8 @@ class SkillLoader:  # (temp!) pylint: disable=C0115,R0903
             try:
                 class_ = getattr(modules, i)
 
-                # Append only if parent class' name is 'Skill'
-                # and class has functions run() and suggestion().
+                # Append only if parent class' name is 'Skill'.
                 if class_.__bases__[0].__name__ == "Skill":
-                    if not hasattr(class_, "run") or not hasattr(
-                        class_, "suggestion"
-                    ):
-                        raise InvalidSkillException(
-                            f"no function run() or suggestion() found \
-in skill {class_.__name__}"
-                        )
                     skills.append(class_)
             except AttributeError:
                 continue
@@ -70,6 +81,38 @@ in skill {class_.__name__}"
         return skills[0]
 
     def get_suggestion(self, query: str) -> Optional[str]:
+        """
+        Searches for a skill and takes its suggesstion to a program.
+
+        Args:
+            query: Users' text input.
+
+        Returns:
+            Optional[str]: Skill's suggestion or None.
+        """
+        try:
+            words = query.split()
+            keyword = words[0].lower()
+        except IndexError:
+            return None
+
+        for skill in self._skills:
+            for skill_keyword in skill.keywords:
+                if keyword in skill_keyword.lower():
+                    return skill.suggestion(" ".join(words[1:]))
+
+        return None
+
+    def run(self, query: str) -> Optional[str]:
+        """
+        Searches for a skill and runs it.
+
+        Args:
+            query: Users' text input.
+
+        Returns:
+            Optional[str]: Skill's text output or None.
+        """
         try:
             words = query.split()
             keyword = words[0]
@@ -78,17 +121,6 @@ in skill {class_.__name__}"
 
         for skill in self._skills:
             if keyword in skill.keywords:
-                return skill.suggestion(" ".join(words[1:]))
+                return skill.run(" ".join(words[1:]))
 
         return None
-
-    def run(self, query: str) -> Optional[str]:
-        try:
-            words = query.split()
-            keyword = words[0]
-        except IndexErrord:
-            return None
-            
-        for skill in self._skills:
-            if keyword in skill.keywords:
-                return skill.run(" ".join(words[1:]))

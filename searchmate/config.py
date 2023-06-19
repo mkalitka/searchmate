@@ -2,6 +2,7 @@
 
 import os
 import configparser
+import logging
 
 
 class Config:
@@ -43,6 +44,8 @@ class Config:
         with open(self.config_file, "w+", encoding="utf-8") as configfile:
             self._config.write(configfile)
 
+        logging.debug("Config - Saving config to %s", self.config_file)
+
     def get(self, section: str, option: str) -> str:
         """
         Reads the setting value from an option name.
@@ -57,8 +60,15 @@ class Config:
         if not self._config.has_section(section) or not self._config.has_option(
             section, option
         ):
-            return None
-        return self._config.get(section, option)
+            self.set(section, option, "")
+            self.save_config()
+
+        value = self._config.get(section, option)
+
+        if value == "":
+            logging.warning("Config - No option %s:%s found", section, option)
+
+        return value
 
     def set(self, section: str, option: str, value: str) -> None:
         """

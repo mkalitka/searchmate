@@ -1,14 +1,24 @@
+import os
+import sys
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtSvgWidgets import *
 from searchmate.skill_loader import SkillLoader
-import sys
+
+
+STYLES_PATH = "styles.css"
 
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
+
+        self._search_icon_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "assets/icon_search.svg"
+        )
+
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
 
@@ -17,19 +27,22 @@ class MainWindow(QWidget):
         self.center_window(1.5)
 
         self.setFocus()
-        QApplication.instance().focusChanged.connect(self.on_focusChanged)
+        QApplication.instance().focusChanged.connect(self.on_focus_changed)
 
-        self.icon = QSvgWidget("imgs/icon_search.svg")
+        self.icon = QSvgWidget(self._search_icon_path)
 
         # setting frames
         self.set_frames()
-        self.mod = ""
+
         # Layout
         self.set_layouts()
 
+        # Load SkillLoader
+        self._loader = SkillLoader()
+
         # Search bar
         self.set_search_bar()
-        self.search_bar.textChanged.connect(self.change_win_size)
+        self.search_bar.textChanged.connect(self.suggestion)
         self.search_bar.returnPressed.connect(self.run)
         # Settings of top Layout
         self.top_layout_settings()
@@ -41,7 +54,7 @@ class MainWindow(QWidget):
         screen_y = self.screen.size().height()
 
         self.width = int(screen_x * 0.3 * const)
-        self.height = int(screen_y / 2.13)
+        self.height = int(screen_y / 3.4)
 
         self.icon_width = int(self.width / 13.5)
 
@@ -51,7 +64,7 @@ class MainWindow(QWidget):
         self.x = int((screen_x - self.width) / 2)
         self.move(self.x, self.height)
 
-    # Settings 
+    # Settings
     def set_frames(self):
         self.icFrame = QFrame()
         self.icFrame.setFixedSize(self.icon_width, self.tmp_height - 10)
@@ -83,6 +96,7 @@ class MainWindow(QWidget):
         self.search_bar = QLineEdit(self)
         self.search_bar.setFixedSize(self.width - self.icon_width, 60)
         self.search_bar.setPlaceholderText("Search something, mate")
+        self.search_bar.setFocus()
 
     def only_bar(self):
         self.remove_widgets()
@@ -96,80 +110,74 @@ class MainWindow(QWidget):
         self.setFixedSize(self.width, 460)
         self.set_bottom_frame()
         self.mainLayout.addWidget(self.rsFrame, 1, 0)
-        self.rsFrame.setFixedSize(self.width, 400 - 10)
+        self.rsFrame.setFixedSize(self.width, 390)
+
+    def suggestion(self):
+        input = self.search_bar.text()
+
+        if not input or input.isspace():
+            self.only_bar()
+        else:
+            response = self._loader.get_suggestion(input)
+            self.show_response(response)
+
+    def run(self):
+        input = self.search_bar.text()
+
+        if not input or input.isspace():
+            self.only_bar()
+        else:
+            response = self._loader.run(input)
+            self.show_response(response)
 
     # Display
-    def change_win_size(self):  
-        input = self.search_bar.text()
-        check = self.isMatch(input)
-        # print("slowo:" , input)
-        
-        if (not (input.strip())) ^ (check == None):
+    def show_response(self, response):
+        if response is None:
+            self.only_bar()
+        elif response["widget_type"] == "plain":
+            self.extended_bar()
+            self.plain(response["message"])
+        elif response["widget_type"] == "markdown":
+            self.extended_bar()
+            self.markdown(response["message"])
+        else:
             self.only_bar()
 
-        elif check != None:
-            self.extended_bar()
-            self.suggestion(check)
-
-    # Other
-    def update_list(self):
-        self.result_list = QListWidget()
-
-        # Clear the list
-        self.result_list.clear()
-        # Get the search text
-        text = self.search_bar.text()
-        # Add data to the list
-        for item in self.data:
-            if text.lower() in item.lower():
-                self.result_list.addItem(QListWidgetItem(item))
-        self.costam.addWidget(self.result_list, 1, 0)
-
-    def on_focusChanged(self):
-        # print(self.isActiveWindow())
+    def on_focus_changed(self):
         if self.isActiveWindow() == False:
             QApplication.instance().quit()
 
-    def suggestion(self,result):
-        if self.mod == "math":
-            label = QLabel(result)
-            label.setObjectName("Result")
-            self.mainLayout.addWidget(label,1,0)
-            self.mainLayout.setAlignment(label, Qt.AlignmentFlag.AlignCenter)
-            self.list_of_widgets.append(label)
+    def plain(self, message):
+        label = QLabel(message)
+        label.setObjectName("Result")
+        self.mainLayout.addWidget(label, 1, 0)
+        self.mainLayout.setAlignment(label, Qt.AlignmentFlag.AlignCenter)
+        self.list_of_widgets.append(label)
+
+    def markdown(self, message):
+        text_edit = QTextEdit(readOnly=True)
+        text_edit.setFixedSize(self.width, 390)
+        self.mainLayout.addWidget(text_edit, 1, 0)
+        self.mainLayout.setAlignment(text_edit, Qt.AlignmentFlag.AlignCenter)
+        text_edit.append(message)
+        self.list_of_widgets.append(text_edit)
+
     def remove_widgets(self):
         for widget in self.list_of_widgets:
             if widget != None:
                 self.mainLayout.removeWidget(widget)
 
-    def run(self):
-        if self.mod == "gpt":
-            
-            text_edit = QTextEdit()
-            text_edit.setFixedSize(self.width,390)
-            self.mainLayout.addWidget(text_edit,1,0)
-            self.mainLayout.setAlignment(text_edit, Qt.AlignmentFlag.AlignCenter)
-            text_edit.setFocus()
-            first = self.search_bar.text()
-            first = first.replace("gpt ","user: ")
-            text_edit.append(first)
-            self.list_of_widgets.append(text_edit)
 
-    def isMatch(self, input):
-        if "math" in input:
-            self.mod = "math"
+def run():
+    module_path = os.path.dirname(os.path.abspath(__file__))
 
-        elif "gpt" in input:
-            self.mod = "gpt"
-        loader = SkillLoader()
-        result = loader.get_suggestion(input)
-        return result
+    app = QApplication(sys.argv)
 
-        
+    # Load CSS file.
+    with open(os.path.join(module_path, STYLES_PATH), "r") as file:
+        app.setStyleSheet(file.read())
 
-app = QApplication(sys.argv)
-with open("styles.css", "r") as file:
-    app.setStyleSheet(file.read())
-window = MainWindow()
-window.show()
-sys.exit(app.exec())
+    window = MainWindow()
+    window.show()
+
+    app.exec()

@@ -1,7 +1,7 @@
 """Abstract skill class."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Dict
 
 
 class Skill(ABC):
@@ -13,11 +13,11 @@ class Skill(ABC):
         self.keywords = []
 
     @abstractmethod
-    def run(self, query: str) -> Optional[str]:
+    def run(self, query: str) -> Optional[Dict[str, str]]:
         """
         Code to be executed when running skill.
 
-        Arguments:
+        Args:
             query: Users' text input.
 
         Returns:
@@ -26,11 +26,11 @@ class Skill(ABC):
         return None
 
     @abstractmethod
-    def suggestion(self, query: str) -> Optional[str]:
+    def suggestion(self, query: str) -> Optional[Dict[str, str]]:
         """
         What to display before executing skill.
 
-        Arguments:
+        Args:
             query: Users' text input.
 
         Returns:

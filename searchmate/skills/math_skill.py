@@ -6,6 +6,7 @@ import cexprtk
 
 from searchmate.skill import Skill
 
+
 class MathSkill(Skill):
     """
     Math skill, it evaluates string to a math value.
@@ -15,36 +16,47 @@ class MathSkill(Skill):
         super().__init__()
         self.keywords = ["math"]
 
+        self._drummer_joke = (
+            "Idzie perkusista przez las, idzie, odwraca się, "
+            "patrzy, a tam wielka stopa. Ba dum tss."
+        )
+
     def run(self, query: str) -> Optional[str]:
         """
-        Code to be executed when running skill.
+        Evaluates math expression.
 
         Attributes:
             query: Users' text input.
 
         Returns:
-            str: Text to display after skill runs.
+            str: Evaluated text to display after skill runs.
         """
         return self.suggestion(query)
 
     def suggestion(self, query: str) -> Optional[str]:
         """
-        What to display before executing skill.
+        Evaluates math expression.
 
         Attributes:
             query: Users' text input.
 
         Returns:
-            str: Text to display before skill runs.
+            str: Evaluated text to display before skill runs.
         """
+        if not query or query.isspace():
+            return None
+
         try:
-
             result = cexprtk.evaluate_expression(query, {})
-            
-            if result == int(result):
-                return str(int(result))
-        except Exception:
-            return "Idzie perkusista przez las, idzie, odwraca się, \
-patrzy, a tam wielka stopa. Ba dum tss."
 
-        return str(result)
+            if result == int(result):
+                result = str(int(result))
+        except OverflowError:
+            result = self._drummer_joke
+        except:  # pylint: disable=W0702
+            return self.suggestion(query[:-1])
+
+        return {
+            "widget_type": "plain",
+            "message": result,
+        }

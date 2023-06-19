@@ -28,7 +28,7 @@ clean:
 	rm -rf .eggs/
 
 lint:
-	poetry run pylint searchmate
+	poetry run pylint searchmate/*
 	poetry run black --check --line-length 80 searchmate
 
 formatter:

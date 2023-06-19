@@ -140,6 +140,8 @@ class MainWindow(QWidget):
         elif response["widget_type"] == "markdown":
             self.extended_bar()
             self.markdown(response["message"])
+        elif response["widget_type"] == "exit":
+            QApplication.instance().quit()
         else:
             self.only_bar()
 

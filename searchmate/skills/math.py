@@ -37,9 +37,10 @@ class MathSkill(Skill):
         Returns:
             str: Text to display before skill runs.
         """
-        result = cexprtk.evaluate_expression(query, {})
-
         try:
+
+            result = cexprtk.evaluate_expression(query, {})
+            
             if result == int(result):
                 return str(int(result))
         except Exception:

@@ -1,3 +1,6 @@
+QApplication{
+    font-family: 'Hubot Sans';
+}
 QLineEdit {
     background-color: white;
     color: black;
@@ -9,7 +12,6 @@ QLineEdit {
     border-top-left-radius: 0%;
     border-bottom-left-radius: 0%;
     width: 300px;
-    color: black;
 }
 QFrame{
     background-color: white;
@@ -22,12 +24,22 @@ QFrame{
     border-top-left-radius: 0px; 
     border-bottom-right-radius: 16px;
 }
-#chuj{
+#Result{
     color: black;
+    font-size: 30px;
+    font-family: 'Hubot Sans';
+    padding: 8px;
+    border-radius: 0px;
+
 }
-QGridLayout{
-    padding: 0px;
-    align-self:baseline;
+QTextEdit{
+    background-color: white;
+    font-size: 30px;
+    color: black;
+    border-radius: 14px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    margin: 8px;
 }
 
 

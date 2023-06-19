@@ -7,9 +7,9 @@ import webbrowser
 from searchmate.skill import Skill
 
 
-class MathSkill(Skill):
+class WebSkill(Skill):
     """
-    Math skill, it evaluates string to a math value.
+    Web skill, it launches web search with given input as fallback.
     """
 
     def __init__(self) -> None:
@@ -18,7 +18,7 @@ class MathSkill(Skill):
 
     def run(self, query: str) -> Optional[str]:
         """
-        Evaluates math expression.
+        Launches web search.
 
         Attributes:
             query: Users' text input.

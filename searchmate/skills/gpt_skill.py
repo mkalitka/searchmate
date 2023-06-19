@@ -22,6 +22,7 @@ class GPTSkill(Skill):
 
         self._suggestion_message = "Press Enter to continue..."
         self._no_api_key_message = "Please add OpenAI API key to the config."
+        self._server_unavailable_message = "OpenAI servers are currently unavailable."
 
     def run(self, query: str) -> Optional[Dict[str, str]]:
         """
@@ -43,13 +44,19 @@ class GPTSkill(Skill):
 
         logging.debug("GPTSkill - sending request to OpenAI...")
 
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": ""},
-                {"role": "user", "content": query},
-            ],
-        )
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": ""},
+                    {"role": "user", "content": query},
+                ],
+            )
+        except openai.error.ServiceUnavailableError:
+            return {
+                "widget_type": "plain",
+                "message": self._server_unavailable_message,
+            }
 
         result = response.choices[0].message.content
 

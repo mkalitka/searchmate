@@ -123,4 +123,11 @@ class SkillLoader:
             if keyword in skill.keywords:
                 return skill.run(" ".join(words[1:]))
 
+        for skill in self._skills:
+            try:
+                if skill.fallback is True:
+                    return skill.run(" ".join(words))
+            except AttributeError:
+                continue
+
         return None

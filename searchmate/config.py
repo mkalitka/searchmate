@@ -14,7 +14,7 @@ class Config:
     """
 
     def __init__(self, config_file: str = None) -> None:
-        """Class constructor, setups Config object."""
+        # Sets up config file.
         if config_file is None:
             self.config_file = os.path.join(
                 os.environ.get("SEARCHMATE_HOME")

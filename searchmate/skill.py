@@ -11,6 +11,7 @@ class Skill(ABC):
 
     def __init__(self) -> None:
         self.keywords = []
+        self.fallback = False
 
     @abstractmethod
     def run(self, query: str) -> Optional[Dict[str, str]]:
@@ -21,7 +22,7 @@ class Skill(ABC):
             query: Users' text input.
 
         Returns:
-            str: Text to display after skill runs.
+            Optional[Dict[str, str]]: Text to display after skill runs.
         """
         return None
 
@@ -34,6 +35,6 @@ class Skill(ABC):
             query: Users' text input.
 
         Returns:
-            str: Text to display before skill runs.
+            Optional[Dict[str, str]]: Text to display before skill runs.
         """
         return None

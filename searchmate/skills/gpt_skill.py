@@ -22,17 +22,19 @@ class GPTSkill(Skill):
 
         self._suggestion_message = "Press Enter to continue..."
         self._no_api_key_message = "Please add OpenAI API key to the config."
-        self._server_unavailable_message = "OpenAI servers are currently unavailable."
+        self._server_unavailable_message = (
+            "OpenAI servers are currently unavailable."
+        )
 
     def run(self, query: str) -> Optional[Dict[str, str]]:
         """
         Sends request to OpenAI's GPT module.
 
-        Arguments:
+        Args:
             query: Users' text input.
 
         Returns:
-            str: GPT's response.
+            Optional[Dict[str, str]]: GPT's response.
         """
         if not self._api_key or self._api_key.isspace():
             return {
@@ -69,11 +71,11 @@ class GPTSkill(Skill):
         """
         What to display before executing skill.
 
-        Arguments:
+        Args:
             query: Users' text input.
 
         Returns:
-            str: Text to display before skill runs.
+            Optional[Dict[str, str]]: Text to display before skill runs.
         """
         if not query or query.isspace():
             return None

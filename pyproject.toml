@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "searchmate"
-version = "0.1.0"
+version = "0.2.0"
 description = """
 A modular and versatile desktop assistant that searches for apps, \
 performs basic math and makes chatting with GPT easier.\
@@ -14,7 +14,6 @@ python = "^3.10"
 configparser = "^5.3.0"
 pyqt6 = "^6.5.1"
 cexprtk = "^0.4.1"
-markdown = "^3.4.3"
 openai = "^0.27.8"
 
 

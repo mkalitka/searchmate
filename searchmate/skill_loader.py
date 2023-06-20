@@ -9,7 +9,7 @@ import re
 import importlib
 import logging
 
-from typing import Optional
+from typing import Optional, Dict
 
 
 class InvalidSkillException(Exception):
@@ -27,6 +27,7 @@ class SkillLoader:
     """
 
     def __init__(self):
+        # Get all files inside skills/ directory.
         self._module_path = os.path.dirname(os.path.abspath(__file__))
         self._tree = os.listdir(f"{self._module_path}/skills")
 
@@ -37,6 +38,7 @@ class SkillLoader:
             s for s in self._tree if re.match(self._pattern, s)
         ]
 
+        # Table of skills instances.
         self._skills = []
 
         for i in self._skills_tree:
@@ -80,7 +82,7 @@ class SkillLoader:
 
         return skills[0]
 
-    def get_suggestion(self, query: str) -> Optional[str]:
+    def get_suggestion(self, query: str) -> Optional[Dict[str, str]]:
         """
         Searches for a skill and takes its suggesstion to a program.
 
@@ -88,7 +90,7 @@ class SkillLoader:
             query: Users' text input.
 
         Returns:
-            Optional[str]: Skill's suggestion or None.
+            Optional[Dict[str, str]]: Skill's suggestion or None.
         """
         try:
             words = query.split()
@@ -98,12 +100,13 @@ class SkillLoader:
 
         for skill in self._skills:
             for skill_keyword in skill.keywords:
+                # Get suggestion from skill if a keyword is found.
                 if keyword in skill_keyword.lower():
                     return skill.suggestion(" ".join(words[1:]))
 
         return None
 
-    def run(self, query: str) -> Optional[str]:
+    def run(self, query: str) -> Optional[Dict[str, str]]:
         """
         Searches for a skill and runs it.
 
@@ -111,7 +114,7 @@ class SkillLoader:
             query: Users' text input.
 
         Returns:
-            Optional[str]: Skill's text output or None.
+            Optional[Dict[str, str]]: Skill's text output or None.
         """
         try:
             words = query.split()
@@ -120,14 +123,13 @@ class SkillLoader:
             return None
 
         for skill in self._skills:
-            if keyword in skill.keywords:
-                return skill.run(" ".join(words[1:]))
+            for skill_keyword in skill.keywords:
+                # Run skill if a keyword is found.
+                if keyword in skill_keyword.lower():
+                    return skill.run(" ".join(words[1:]))
 
         for skill in self._skills:
-            try:
-                if skill.fallback is True:
-                    return skill.run(" ".join(words))
-            except AttributeError:
-                continue
+            if skill.fallback is True:
+                return skill.run(" ".join(words))
 
         return None

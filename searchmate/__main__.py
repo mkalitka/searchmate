@@ -4,6 +4,7 @@ import os
 import argparse
 import importlib.metadata
 import logging
+import platform
 
 from searchmate.gui import gui
 
@@ -74,7 +75,10 @@ def main() -> None:
 
         logging.info("Main - Starting Searchmate version %s", version)
 
-        os.environ["QT_QPA_PLATFORM"] = "xcb"
+        # Use xcb engine on Linux systems.
+        if platform.system() == "Linux":
+            os.environ["QT_QPA_PLATFORM"] = "xcb"
+
         gui.run()
 
         logging.info("Main - Stopping SearchMate.")

@@ -1,14 +1,24 @@
+# pylint: skip-file
+
 import os
 import sys
 
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
-from PyQt6.QtGui import *
-from PyQt6.QtSvgWidgets import *
+from PyQt6.QtWidgets import (
+    QWidget,
+    QApplication,
+    QFrame,
+    QGridLayout,
+    QLabel,
+    QTextEdit,
+    QLineEdit,
+)
+from PyQt6.QtCore import Qt
+from PyQt6.QtSvgWidgets import QSvgWidget
+
 from searchmate.skill_loader import SkillLoader
 
 
-STYLES_PATH = "styles.css"
+STYLES_PATH = "assets/styles.css"
 
 
 class MainWindow(QWidget):

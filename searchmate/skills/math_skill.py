@@ -1,6 +1,6 @@
 """Math skill."""
 
-from typing import Optional
+from typing import Optional, Dict
 
 import cexprtk
 
@@ -21,27 +21,27 @@ class MathSkill(Skill):
             "patrzy, a tam wielka stopa. Ba dum tss."
         )
 
-    def run(self, query: str) -> Optional[str]:
+    def run(self, query: str) -> Optional[Dict[str, str]]:
         """
         Evaluates math expression.
 
-        Attributes:
+        Args:
             query: Users' text input.
 
         Returns:
-            str: Evaluated text to display after skill runs.
+            Optional[Dict[str, str]]: Evaluated text to display after skill runs.
         """
         return self.suggestion(query)
 
-    def suggestion(self, query: str) -> Optional[str]:
+    def suggestion(self, query: str) -> Optional[Dict[str, str]]:
         """
         Evaluates math expression.
 
-        Attributes:
+        Args:
             query: Users' text input.
 
         Returns:
-            str: Evaluated text to display before skill runs.
+            Optional[Dict[str, str]]: Evaluated text to display before skill runs.
         """
         if not query or query.isspace():
             return None

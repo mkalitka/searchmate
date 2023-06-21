@@ -13,14 +13,32 @@ The project was created by **UWR** students for
 
 - Graphical interface with a textbox
 - Modular skills
-- Apps searching
 - Basic math
 - ChatGPT integration
 
 ## Installation
 
-**TO-DO**
+#### Installation with poetry:
+
+```shell 
+poetry install
+```
+#### Installation with pip:
+
+```shell
+pip install -e
+```
 
 ## Usage
 
-**TO-DO**
+#### With poetry:
+
+```shell
+poetry run python -m searchmate
+```
+
+#### With pip:
+
+```shell
+python -m searchmate
+```

@@ -1,3 +1,4 @@
+
 # SearchMate 🔎
 
 #### *A modular and versatile desktop assistant that searches for apps, performs basic math and makes chatting with GPT easier.*
@@ -5,9 +6,12 @@
 The project was created by **UWR** students for
 **object-oriented programming** subject.
 
-## Screenshots
+## Display
 
-**TO-DO**
+
+
+https://github.com/Mikolkar/searchmate/assets/118861101/38379e21-0752-45bd-861c-4df82000d710
+
 
 ## Features
 

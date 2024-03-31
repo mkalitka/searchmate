@@ -48,6 +48,13 @@ python -m searchmate
 ```
 ## Usage
 
+<<<<<<< HEAD
 To calculate a mathematical expression in the Searchmate application, you need to first type the word "math", followed by the mathematical expression you want to calculate. For example: "math 2+2". If you want to ask a question to the GPT language model, you should type "gpt", followed by your question. It's important to enter your API key into the configuration file in order to use this function.
 
 In the case of entering any other phrase, the program will launch the browser and display a page with search results for the entered query.
+=======
+- To calculate a mathematical expression in the Searchmate application, you need to first type the word "math", followed by the mathematical expression you want to calculate. For example: "math 2+2". 
+- If you want to ask a question to the GPT language model, you should type "gpt", followed by your question. It's important to enter your API key into the configuration file in order to use this function.
+
+- In the case of entering any other phrase, the program will launch the browser and display a page with search results for the entered query.
+>>>>>>> c703c5d (Update pyproject.toml and lock)

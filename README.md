@@ -6,9 +6,7 @@
 The project was created by **UWR** students for
 **object-oriented programming** subject.
 
-## Display
-
-
+## Video Demonstration
 
 https://github.com/Mikolkar/searchmate/assets/118861101/38379e21-0752-45bd-861c-4df82000d710
 
@@ -30,10 +28,9 @@ poetry install
 #### Installation with pip:
 
 ```shell
-pip install -e
+pip install -e .
 ```
 
-## Run
 ## Run
 
 #### With poetry:

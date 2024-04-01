@@ -38,6 +38,10 @@ pip install -e .
 ```shell
 poetry run python -m searchmate
 ```
+**or**
+```shell
+poetry run search
+```
 
 #### With pip:
 

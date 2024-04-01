@@ -31,3 +31,6 @@ sphinx-press-theme = "^0.8.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poetry.scripts]
+
+search = "searchmate.__main__:main"
